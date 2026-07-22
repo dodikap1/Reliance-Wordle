@@ -17,6 +17,8 @@
     --verified: #17D9A3;
     --verified-dim: #0E5D48;
     --flagged: #E8A33D;
+    --flagged-dim: #6B4C1B;
+    --absent: #2C3742;
     --danger: #E85C5C;
     --font-display: 'JetBrains Mono', monospace;
     --font-body: 'Inter', sans-serif;
@@ -32,13 +34,13 @@
       linear-gradient(var(--panel-edge) 1px, transparent 1px),
       linear-gradient(90deg, var(--panel-edge) 1px, transparent 1px);
     background-size: 40px 40px;
+    background-attachment: fixed;
     color:var(--text);
     font-family:var(--font-body);
     min-height:100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
-    padding:20px 16px 60px;
   }
 
   .banner{
@@ -52,17 +54,23 @@
     letter-spacing:0.5px;
     padding:10px 14px;
     border-radius:var(--radius);
-    margin-bottom:20px;
+    margin:16px 16px 0;
     line-height:1.5;
   }
 
   header{
     width:100%;
     max-width:560px;
-    padding:4px 0 16px;
+    padding:20px 16px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--panel-edge);
   }
 
-  .eyebrow{
+  .brand{ display:flex; flex-direction:column; gap:2px; }
+
+  .brand .eyebrow{
     font-family:var(--font-display);
     font-size:10px;
     letter-spacing:2px;
@@ -70,22 +78,39 @@
     text-transform:uppercase;
   }
 
-  h1{
+  .brand h1{ font-family:var(--font-display); font-size:20px; font-weight:700; margin:0; letter-spacing:0.5px; }
+  .brand h1 span{ color: var(--text-dim); font-weight:400; }
+
+  .status-pill{
     font-family:var(--font-display);
-    font-size:20px;
-    margin:2px 0 0;
+    font-size:10px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--verified);
+    border:1px solid var(--verified-dim);
+    background:rgba(23,217,163,0.06);
+    padding:6px 10px;
+    border-radius:var(--radius);
+    white-space:nowrap;
   }
 
-  h1 span{ color:var(--text-dim); font-weight:400; }
+  main{
+    width:100%;
+    max-width:560px;
+    padding:20px 16px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    flex:1;
+  }
 
   .panel{
     width:100%;
-    max-width:560px;
     background:var(--panel);
     border:1px solid var(--panel-edge);
     border-radius:6px;
     padding:20px;
-    margin-bottom:20px;
   }
 
   .panel h2{
@@ -119,10 +144,7 @@
     margin-bottom:14px;
   }
 
-  input:focus{
-    outline:2px solid var(--verified);
-    outline-offset:1px;
-  }
+  input:focus{ outline:2px solid var(--verified); outline-offset:1px; }
 
   button{
     font-family:var(--font-display);
@@ -161,75 +183,109 @@
     font-family:var(--font-display);
     font-size:12px;
     color:var(--text-dim);
+    width:100%;
+    max-width:560px;
+    padding:0 16px;
   }
 
   .whoami strong{ color:var(--verified); }
+  .whoami button{ width:auto; padding:6px 12px; }
 
-  table{
+  #hint-bar{
     width:100%;
-    border-collapse:collapse;
-    font-size:13px;
-  }
-
-  th, td{
-    text-align:left;
-    padding:8px 6px;
-    border-bottom:1px solid var(--panel-edge);
-  }
-
-  th{
-    font-family:var(--font-display);
-    font-size:10px;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    color:var(--text-dim);
-  }
-
-  td.rank{
-    font-family:var(--font-display);
-    color:var(--flagged);
-    width:30px;
-  }
-
-  tr.me td{ color:var(--verified); }
-
-  .stat-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    text-align:center;
-  }
-
-  .stat{
-    background:var(--bg);
-    border:1px solid var(--panel-edge);
-    border-radius:var(--radius);
-    padding:12px 6px;
-  }
-
-  .stat .num{
-    font-family:var(--font-display);
-    font-size:22px;
-    color:var(--verified);
-  }
-
-  .stat .lbl{
-    font-family:var(--font-display);
-    font-size:9px;
-    color:var(--text-dim);
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    margin-top:4px;
-  }
-
-  .hidden{ display:none; }
-
-  .empty{
     font-family:var(--font-display);
     font-size:12px;
     color:var(--text-dim);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+
+  #hint-bar .word-len{ color:var(--flagged); }
+
+  #board{ display:flex; flex-direction:column; gap:6px; width:100%; }
+  .row{ display:flex; gap:6px; justify-content:center; }
+
+  .tile{
+    width:44px; height:44px;
+    border:1px solid var(--panel-edge);
+    background:var(--panel);
+    border-radius:var(--radius);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; font-size:20px;
+    text-transform:uppercase; color:var(--text);
+    transition: transform 0.15s ease;
+  }
+
+  .tile.filled{ border-color:#3A4552; }
+  .tile.pop{ transform:scale(1.06); }
+  .tile.flip{ animation: flipTile 0.5s ease forwards; }
+
+  @keyframes flipTile{
+    0%{ transform: rotateX(0deg); }
+    50%{ transform: rotateX(90deg); }
+    51%{ transform: rotateX(90deg); }
+    100%{ transform: rotateX(0deg); }
+  }
+
+  .tile.correct{ background:var(--verified); border-color:var(--verified); color:#04140F; }
+  .tile.present{ background:var(--flagged); border-color:var(--flagged); color:#1D1200; }
+  .tile.absent{ background:var(--absent); border-color:var(--absent); color:var(--text-dim); }
+
+  #message{
+    min-height:20px;
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.5px;
+    color:var(--danger);
+    text-transform:uppercase;
     text-align:center;
-    padding:20px 0;
+  }
+
+  #keyboard{ display:flex; flex-direction:column; gap:8px; width:100%; max-width:520px; }
+  .krow{ display:flex; gap:6px; justify-content:center; }
+
+  .key{
+    flex:1; min-width:0; max-width:44px; height:52px;
+    background:var(--panel); border:1px solid var(--panel-edge);
+    border-radius:var(--radius); color:var(--text);
+    font-family:var(--font-body); font-weight:600; font-size:13px;
+    text-transform:uppercase; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  .key:active{ transform: scale(0.94); }
+  .key.wide{ max-width:66px; font-size:10px; letter-spacing:0.5px; }
+  .key.correct{ background:var(--verified); border-color:var(--verified); color:#04140F; }
+  .key.present{ background:var(--flagged); border-color:var(--flagged); color:#1D1200; }
+  .key.absent{ background:var(--absent); border-color:var(--absent); color:var(--text-dim); }
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th, td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--panel-edge); }
+  th{ font-family:var(--font-display); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); }
+  td.rank{ font-family:var(--font-display); color:var(--flagged); width:30px; }
+  tr.me td{ color:var(--verified); }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; }
+  .stat{ background:var(--bg); border:1px solid var(--panel-edge); border-radius:var(--radius); padding:12px 6px; }
+  .stat .num{ font-family:var(--font-display); font-size:22px; color:var(--verified); }
+  .stat .lbl{ font-family:var(--font-display); font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
+
+  .hidden{ display:none; }
+  .empty{ font-family:var(--font-display); font-size:12px; color:var(--text-dim); text-align:center; padding:20px 0; }
+
+  footer{
+    width:100%; max-width:560px; padding:14px 16px 24px; text-align:center;
+    font-family:var(--font-display); font-size:10px; color:var(--text-dim);
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  @media (max-width:900px){
+    .tile{ width:38px; height:38px; font-size:17px; }
+    .key{ height:48px; font-size:12px; }
+    header{ padding:16px 12px 10px; }
   }
 </style>
 </head>
@@ -239,171 +295,161 @@
   PROTOTYPE ONLY. Passwords here are stored in plain text in your browser's
   local storage, purely to test the login and leaderboard flow. This is not
   how Phase 2 will actually work. The real build uses a proper hashing
-  library and a real database, built and reviewed separately before it
-  touches anyone's real credentials.
+  library and a real database, built and reviewed separately.
 </div>
 
 <header>
-  <span class="eyebrow">Reliance Cyber // Daily Briefing</span>
-  <h1>WORDLE<span>::CYBER</span> — Phase 2 plumbing test</h1>
+  <div class="brand">
+    <span class="eyebrow">Reliance Cyber // Daily Briefing</span>
+    <h1>WORDLE<span>::CYBER</span></h1>
+  </div>
+  <div class="status-pill" id="date-pill">LOADING</div>
 </header>
 
-<div class="panel" id="auth-panel">
-  <h2 id="auth-heading">Log in</h2>
-  <div id="auth-message"></div>
-  <label for="username">Username</label>
-  <input type="text" id="username" autocomplete="off">
-  <label for="password">Password</label>
-  <input type="password" id="password">
-  <button id="auth-submit">Log in</button>
-  <button class="secondary" id="auth-toggle">Need an account? Sign up instead</button>
-</div>
-
-<div class="panel hidden" id="session-panel">
-  <div class="whoami">
-    <span>Signed in as <strong id="whoami-name">-</strong></span>
-    <button class="secondary" id="logout-btn" style="width:auto;padding:6px 12px;">Log out</button>
+<!-- LOGIN / SIGNUP, shown until someone is signed in -->
+<main id="auth-main">
+  <div class="panel" id="auth-panel">
+    <h2 id="auth-heading">Log in to play</h2>
+    <div id="auth-message"></div>
+    <label for="username">Username</label>
+    <input type="text" id="username" autocomplete="off">
+    <label for="password">Password</label>
+    <input type="password" id="password">
+    <button id="auth-submit">Log in</button>
+    <button class="secondary" id="auth-toggle">Need an account? Sign up instead</button>
   </div>
+</main>
+
+<!-- EVERYTHING BELOW ONLY SHOWS ONCE SIGNED IN -->
+<div class="whoami hidden" id="whoami-bar">
+  <span>Signed in as <strong id="whoami-name">-</strong></span>
+  <button class="secondary" id="logout-btn">Log out</button>
 </div>
 
-<div class="panel hidden" id="play-panel">
-  <h2>Today's result</h2>
-  <div id="play-message" style="font-family:var(--font-display);font-size:12px;color:var(--text-dim);margin-bottom:10px;"></div>
-  <label for="guesses-used">Guesses used to win (1-6)</label>
-  <input type="number" id="guesses-used" min="1" max="6">
-  <button id="submit-win">Submit a win</button>
-  <button class="secondary" id="submit-loss">Submit a loss instead</button>
-</div>
-
-<div class="panel hidden" id="stats-panel">
-  <h2>Your stats</h2>
-  <div class="stat-grid">
-    <div class="stat"><div class="num" id="stat-wins">0</div><div class="lbl">Total wins</div></div>
-    <div class="stat"><div class="num" id="stat-avg">-</div><div class="lbl">Avg guesses</div></div>
-    <div class="stat"><div class="num" id="stat-streak">0</div><div class="lbl">Streak</div></div>
+<main class="hidden" id="game-main">
+  <div id="hint-bar">
+    <span>TARGET LENGTH: <span class="word-len" id="word-len">--</span></span>
+    <span id="guess-count">GUESS 0 / 6</span>
   </div>
-</div>
 
-<div class="panel hidden" id="leaderboard-panel">
-  <h2>Today's leaderboard</h2>
-  <div id="leaderboard-body"></div>
-</div>
+  <div id="board"></div>
+  <div id="message"></div>
+  <div id="keyboard"></div>
+
+  <div class="panel hidden" id="stats-panel">
+    <h2>Your stats</h2>
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="stat-wins">0</div><div class="lbl">Total wins</div></div>
+      <div class="stat"><div class="num" id="stat-avg">-</div><div class="lbl">Avg guesses</div></div>
+      <div class="stat"><div class="num" id="stat-streak">0</div><div class="lbl">Streak</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="leaderboard-panel">
+    <h2>Today's leaderboard</h2>
+    <div id="leaderboard-body"></div>
+  </div>
+</main>
+
+<footer>Reliance Cyber — Managed Security Services · New word every 24 hours</footer>
 
 <script>
 (function(){
 
+  // ---- WORD BANK ----
+  const WORDS = [
+    "PHISHING","FIREWALL","MALWARE","RANSOMWARE","ENCRYPTION","GOVERNANCE",
+    "COMPLIANCE","ZERODAY","BREACH","ENDPOINT","PENTEST","SPOOFING","BOTNET",
+    "DARKWEB","KEYLOGGER","SANDBOX","BACKDOOR","HONEYPOT","REDTEAM","BLUETEAM",
+    "EXPLOIT","PAYLOAD","ROOTKIT","TROJAN","SPYWARE","CREDENTIAL","CERTIFICATE",
+    "INSIDER","QUARANTINE","FORENSICS","PERIMETER","GATEWAY","PROTOCOL",
+    "CIPHER","ALGORITHM","BIOMETRIC","PASSPHRASE","LOCKDOWN","INTRUSION",
+    "RESILIENCE","MITIGATION","REMEDIATION","ATTACKER","ADVERSARY","ANALYST"
+  ];
+
+  const MAX_GUESSES = 6;
+
+  function dayIndex(){
+    const epoch = Date.UTC(2026, 0, 1);
+    const now = new Date();
+    const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const days = Math.floor((todayUTC - epoch) / 86400000);
+    return ((days % WORDS.length) + WORDS.length) % WORDS.length;
+  }
+
+  const ANSWER = WORDS[dayIndex()];
+  const WORD_LEN = ANSWER.length;
+
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+
   // ---- STAND-IN "DATABASE" ----
-  // Real Phase 2 replaces every function in this block with actual network
-  // calls to a real backend and a real database. Nothing here is meant to
-  // survive into production, it exists purely so the login/leaderboard
-  // flow can be clicked through and checked for sense.
+  // Real Phase 2 replaces this whole block with real network calls to a
+  // real backend and database. This exists only so the flow (login, play,
+  // leaderboard) can be tested end to end in a browser.
 
   const USERS_KEY = "rw-proto-users";
   const RESULTS_KEY = "rw-proto-results";
   const SESSION_KEY = "rw-proto-session";
 
-  function loadUsers(){
-    return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-  }
-  function saveUsers(users){
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  }
-  function loadResults(){
-    return JSON.parse(localStorage.getItem(RESULTS_KEY) || "[]");
-  }
-  function saveResults(results){
-    localStorage.setItem(RESULTS_KEY, JSON.stringify(results));
-  }
-  function getSession(){
-    return localStorage.getItem(SESSION_KEY);
-  }
-  function setSession(username){
-    localStorage.setItem(SESSION_KEY, username);
-  }
-  function clearSession(){
-    localStorage.removeItem(SESSION_KEY);
-  }
+  function loadUsers(){ return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
+  function saveUsers(u){ localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+  function loadResults(){ return JSON.parse(localStorage.getItem(RESULTS_KEY) || "[]"); }
+  function saveResults(r){ localStorage.setItem(RESULTS_KEY, JSON.stringify(r)); }
+  function getSession(){ return localStorage.getItem(SESSION_KEY); }
+  function setSession(u){ localStorage.setItem(SESSION_KEY, u); }
+  function clearSession(){ localStorage.removeItem(SESSION_KEY); }
 
-  function todayStr(){
-    return new Date().toISOString().slice(0,10);
+  function gameStateKey(username){ return "rw-proto-game-" + username + "-" + todayStr(); }
+  function loadGameState(username){
+    try{ const raw = localStorage.getItem(gameStateKey(username)); return raw ? JSON.parse(raw) : null; }
+    catch(e){ return null; }
+  }
+  function saveGameState(username, state){
+    localStorage.setItem(gameStateKey(username), JSON.stringify(state));
   }
 
   // ---- LEADERBOARD LOGIC ----
-  // Same functions as leaderboard-logic.js, inlined here so this file
-  // runs standalone in a browser without a build step.
-
   function rankDailyResults(results){
-    return [...results]
-      .filter(r => r.won)
-      .sort((a,b) => {
-        if(a.guesses_used !== b.guesses_used) return a.guesses_used - b.guesses_used;
-        return new Date(a.completed_at) - new Date(b.completed_at);
-      });
+    return [...results].filter(r => r.won).sort((a,b) => {
+      if(a.guesses_used !== b.guesses_used) return a.guesses_used - b.guesses_used;
+      return new Date(a.completed_at) - new Date(b.completed_at);
+    });
   }
-
   function averageGuesses(userResults){
     const won = userResults.filter(r => r.won);
     if(won.length === 0) return null;
-    const total = won.reduce((sum,r) => sum + r.guesses_used, 0);
-    return total / won.length;
+    return won.reduce((s,r) => s + r.guesses_used, 0) / won.length;
   }
-
-  function totalWins(userResults){
-    return userResults.filter(r => r.won).length;
-  }
-
+  function totalWins(userResults){ return userResults.filter(r => r.won).length; }
   function currentStreak(userResults){
     const wonDates = new Set(userResults.filter(r => r.won).map(r => r.play_date));
-    let streak = 0;
-    let cursor = new Date();
+    let streak = 0, cursor = new Date();
     while(true){
-      const dateStr = cursor.toISOString().slice(0,10);
-      if(wonDates.has(dateStr)){
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else {
-        break;
-      }
+      const d = cursor.toISOString().slice(0,10);
+      if(wonDates.has(d)){ streak++; cursor.setDate(cursor.getDate() - 1); }
+      else break;
     }
     return streak;
   }
 
-  function hasPlayedToday(userResults){
-    return userResults.some(r => r.play_date === todayStr());
-  }
-
-  // ---- DOM refs ----
-  const authPanel = document.getElementById("auth-panel");
+  // ---- AUTH DOM ----
+  const authMain = document.getElementById("auth-main");
   const authHeading = document.getElementById("auth-heading");
   const authMessage = document.getElementById("auth-message");
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
   const authSubmit = document.getElementById("auth-submit");
   const authToggle = document.getElementById("auth-toggle");
-
-  const sessionPanel = document.getElementById("session-panel");
+  const whoamiBar = document.getElementById("whoami-bar");
   const whoamiName = document.getElementById("whoami-name");
   const logoutBtn = document.getElementById("logout-btn");
+  const gameMain = document.getElementById("game-main");
 
-  const playPanel = document.getElementById("play-panel");
-  const playMessage = document.getElementById("play-message");
-  const guessesInput = document.getElementById("guesses-used");
-  const submitWinBtn = document.getElementById("submit-win");
-  const submitLossBtn = document.getElementById("submit-loss");
-
-  const statsPanel = document.getElementById("stats-panel");
-  const statWins = document.getElementById("stat-wins");
-  const statAvg = document.getElementById("stat-avg");
-  const statStreak = document.getElementById("stat-streak");
-
-  const leaderboardPanel = document.getElementById("leaderboard-panel");
-  const leaderboardBody = document.getElementById("leaderboard-body");
-
-  let mode = "login"; // or "signup"
+  let mode = "login";
 
   authToggle.addEventListener("click", () => {
     mode = mode === "login" ? "signup" : "login";
-    authHeading.textContent = mode === "login" ? "Log in" : "Sign up";
+    authHeading.textContent = mode === "login" ? "Log in to play" : "Sign up to play";
     authSubmit.textContent = mode === "login" ? "Log in" : "Create account";
     authToggle.textContent = mode === "login" ? "Need an account? Sign up instead" : "Already have an account? Log in instead";
     authMessage.textContent = "";
@@ -413,118 +459,234 @@
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
     authMessage.textContent = "";
-
-    if(!username || !password){
-      authMessage.textContent = "Enter a username and password.";
-      return;
-    }
+    if(!username || !password){ authMessage.textContent = "Enter a username and password."; return; }
 
     const users = loadUsers();
-
     if(mode === "signup"){
       if(users.some(u => u.username.toLowerCase() === username.toLowerCase())){
-        authMessage.textContent = "That username is already taken.";
-        return;
+        authMessage.textContent = "That username is already taken."; return;
       }
       users.push({ username, displayName: username, password });
       saveUsers(users);
       setSession(username);
     } else {
       const match = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
-      if(!match){
-        authMessage.textContent = "Username or password doesn't match.";
-        return;
-      }
+      if(!match){ authMessage.textContent = "Username or password doesn't match."; return; }
       setSession(username);
     }
-
-    usernameInput.value = "";
-    passwordInput.value = "";
-    renderSignedIn();
+    usernameInput.value = ""; passwordInput.value = "";
+    enterGame();
   });
 
   logoutBtn.addEventListener("click", () => {
     clearSession();
-    renderSignedOut();
+    authMain.classList.remove("hidden");
+    whoamiBar.classList.add("hidden");
+    gameMain.classList.add("hidden");
   });
 
-  submitWinBtn.addEventListener("click", () => submitResult(true));
-  submitLossBtn.addEventListener("click", () => submitResult(false));
+  // ---- GAME DOM refs ----
+  const boardEl = document.getElementById("board");
+  const keyboardEl = document.getElementById("keyboard");
+  const messageEl = document.getElementById("message");
+  const wordLenEl = document.getElementById("word-len");
+  const guessCountEl = document.getElementById("guess-count");
+  const datePillEl = document.getElementById("date-pill");
+  const statsPanel = document.getElementById("stats-panel");
+  const statWins = document.getElementById("stat-wins");
+  const statAvg = document.getElementById("stat-avg");
+  const statStreak = document.getElementById("stat-streak");
+  const leaderboardBody = document.getElementById("leaderboard-body");
 
-  function submitResult(won){
-    const username = getSession();
-    const results = loadResults();
-    const today = todayStr();
+  wordLenEl.textContent = WORD_LEN;
+  datePillEl.textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short' }).toUpperCase();
 
-    if(results.some(r => r.username === username && r.play_date === today)){
-      playMessage.textContent = "Already submitted a result for today.";
-      return;
+  let currentUser = null;
+  let state = null;
+
+  function enterGame(){
+    currentUser = getSession();
+    const users = loadUsers();
+    const user = users.find(u => u.username === currentUser);
+    whoamiName.textContent = user ? user.displayName : currentUser;
+
+    authMain.classList.add("hidden");
+    whoamiBar.classList.remove("hidden");
+    gameMain.classList.remove("hidden");
+
+    state = loadGameState(currentUser) || { guesses: [], currentGuess: "", finished: false, won: false };
+
+    buildBoard();
+    buildKeyboard();
+    render();
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = "";
+    for(let r=0; r<MAX_GUESSES; r++){
+      const row = document.createElement("div");
+      row.className = "row"; row.dataset.row = r;
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = document.createElement("div");
+        tile.className = "tile"; tile.dataset.row = r; tile.dataset.col = c;
+        row.appendChild(tile);
+      }
+      boardEl.appendChild(row);
     }
+  }
 
-    let guesses = 6;
-    if(won){
-      guesses = parseInt(guessesInput.value, 10);
-      if(!guesses || guesses < 1 || guesses > 6){
-        playMessage.textContent = "Enter a number of guesses between 1 and 6.";
-        return;
+  const KB_ROWS = [
+    "QWERTYUIOP".split(""),
+    "ASDFGHJKL".split(""),
+    ["ENTER", ..."ZXCVBNM".split(""), "BACK"]
+  ];
+
+  function buildKeyboard(){
+    keyboardEl.innerHTML = "";
+    KB_ROWS.forEach(rowKeys => {
+      const row = document.createElement("div");
+      row.className = "krow";
+      rowKeys.forEach(k => {
+        const btn = document.createElement("div");
+        btn.className = "key"; btn.dataset.key = k;
+        if(k === "ENTER" || k === "BACK"){
+          btn.classList.add("wide");
+          btn.textContent = k === "BACK" ? "DEL" : "ENTER";
+        } else { btn.textContent = k; }
+        btn.addEventListener("click", () => handleKey(k));
+        row.appendChild(btn);
+      });
+      keyboardEl.appendChild(row);
+    });
+  }
+
+  function scoreGuess(guess){
+    const result = new Array(WORD_LEN).fill("absent");
+    const answerLetters = ANSWER.split("");
+    for(let i=0;i<WORD_LEN;i++){
+      if(guess[i] === answerLetters[i]){ result[i] = "correct"; answerLetters[i] = null; }
+    }
+    for(let i=0;i<WORD_LEN;i++){
+      if(result[i] === "correct") continue;
+      const idx = answerLetters.indexOf(guess[i]);
+      if(idx !== -1){ result[i] = "present"; answerLetters[idx] = null; }
+    }
+    return result;
+  }
+
+  function render(){
+    guessCountEl.textContent = "GUESS " + state.guesses.length + " / " + MAX_GUESSES;
+
+    state.guesses.forEach((g, r) => {
+      const result = scoreGuess(g);
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = boardEl.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+        tile.textContent = g[c];
+        tile.classList.add("filled", result[c]);
+      }
+    });
+
+    if(!state.finished){
+      const r = state.guesses.length;
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = boardEl.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+        if(tile){
+          const letter = state.currentGuess[c] || "";
+          tile.textContent = letter;
+          tile.classList.toggle("filled", !!letter);
+        }
       }
     }
 
+    const STATUS_RANK = { correct: 3, present: 2, absent: 1 };
+    const keyStatus = {};
+    state.guesses.forEach(g => {
+      const result = scoreGuess(g);
+      for(let i=0;i<g.length;i++){
+        const letter = g[i];
+        const next = result[i];
+        if(!keyStatus[letter] || STATUS_RANK[next] > STATUS_RANK[keyStatus[letter]]){
+          keyStatus[letter] = next;
+        }
+      }
+    });
+    document.querySelectorAll(".key").forEach(btn => {
+      const k = btn.dataset.key;
+      btn.classList.remove("correct","present","absent");
+      if(keyStatus[k]) btn.classList.add(keyStatus[k]);
+    });
+
+    refreshStatsAndLeaderboard();
+  }
+
+  function handleKey(k){
+    if(state.finished) return;
+    if(k === "BACK"){ state.currentGuess = state.currentGuess.slice(0, -1); clearMessage(); render(); return; }
+    if(k === "ENTER"){ submitGuess(); return; }
+    if(/^[A-Z]$/.test(k) && state.currentGuess.length < WORD_LEN){
+      state.currentGuess += k; clearMessage(); render();
+    }
+  }
+
+  function submitGuess(){
+    if(state.currentGuess.length < WORD_LEN){ flashMessage("Not enough letters"); return; }
+    state.guesses.push(state.currentGuess);
+    const isCorrect = state.currentGuess === ANSWER;
+    state.currentGuess = "";
+
+    if(isCorrect){ state.finished = true; state.won = true; }
+    else if(state.guesses.length >= MAX_GUESSES){ state.finished = true; state.won = false; }
+
+    saveGameState(currentUser, state);
+
+    // THIS is the actual fix: the real result gets recorded automatically
+    // the moment a game finishes, using the real guess count. Nobody types
+    // a score in by hand.
+    if(state.finished){
+      recordResultIfNeeded();
+    }
+
+    render();
+  }
+
+  function recordResultIfNeeded(){
+    const results = loadResults();
+    const today = todayStr();
+    if(results.some(r => r.username === currentUser && r.play_date === today)) return;
+
     results.push({
-      username,
+      username: currentUser,
       play_date: today,
-      guesses_used: guesses,
-      won,
+      guesses_used: state.won ? state.guesses.length : MAX_GUESSES,
+      won: state.won,
       completed_at: new Date().toISOString()
     });
     saveResults(results);
-    playMessage.textContent = won ? "Win recorded for today." : "Loss recorded for today.";
-    renderStatsAndLeaderboard();
   }
 
-  function renderSignedIn(){
-    const username = getSession();
-    const users = loadUsers();
-    const user = users.find(u => u.username === username);
-
-    authPanel.classList.add("hidden");
-    sessionPanel.classList.remove("hidden");
-    playPanel.classList.remove("hidden");
-    statsPanel.classList.remove("hidden");
-    leaderboardPanel.classList.remove("hidden");
-
-    whoamiName.textContent = user ? user.displayName : username;
-    renderStatsAndLeaderboard();
+  function flashMessage(msg){
+    messageEl.textContent = msg;
+    const row = boardEl.querySelector(`.row[data-row="${state.guesses.length}"]`);
+    if(row){
+      row.querySelectorAll(".tile").forEach(t => {
+        t.style.borderColor = "var(--danger)";
+        setTimeout(() => { t.style.borderColor = ""; }, 400);
+      });
+    }
   }
 
-  function renderSignedOut(){
-    authPanel.classList.remove("hidden");
-    sessionPanel.classList.add("hidden");
-    playPanel.classList.add("hidden");
-    statsPanel.classList.add("hidden");
-    leaderboardPanel.classList.add("hidden");
-    authMessage.textContent = "";
-  }
+  function clearMessage(){ messageEl.textContent = ""; }
 
-  function renderStatsAndLeaderboard(){
-    const username = getSession();
+  function refreshStatsAndLeaderboard(){
     const allResults = loadResults();
-    const myResults = allResults.filter(r => r.username === username);
+    const myResults = allResults.filter(r => r.username === currentUser);
 
-    statWins.textContent = totalWins(myResults);
-    const avg = averageGuesses(myResults);
-    statAvg.textContent = avg === null ? "-" : avg.toFixed(1);
-    statStreak.textContent = currentStreak(myResults);
-
-    if(hasPlayedToday(myResults)){
-      playMessage.textContent = "Already submitted a result for today.";
-      guessesInput.disabled = true;
-      submitWinBtn.disabled = true;
-      submitLossBtn.disabled = true;
-    } else {
-      guessesInput.disabled = false;
-      submitWinBtn.disabled = false;
-      submitLossBtn.disabled = false;
+    if(myResults.length > 0){
+      statsPanel.classList.remove("hidden");
+      statWins.textContent = totalWins(myResults);
+      const avg = averageGuesses(myResults);
+      statAvg.textContent = avg === null ? "-" : avg.toFixed(1);
+      statStreak.textContent = currentStreak(myResults);
     }
 
     const today = todayStr();
@@ -535,27 +697,34 @@
       leaderboardBody.innerHTML = '<div class="empty">Nobody has solved today\'s word yet.</div>';
       return;
     }
+    if(!state.finished){
+      leaderboardBody.innerHTML = '<div class="empty">Leaderboard unlocks once you finish today\'s game.</div>';
+      return;
+    }
 
     const users = loadUsers();
-    const nameFor = (u) => {
-      const found = users.find(x => x.username === u);
-      return found ? found.displayName : u;
-    };
+    const nameFor = (u) => { const f = users.find(x => x.username === u); return f ? f.displayName : u; };
 
     let html = "<table><thead><tr><th>#</th><th>Player</th><th>Guesses</th></tr></thead><tbody>";
     ranked.forEach((r, i) => {
-      const isMe = r.username === username;
+      const isMe = r.username === currentUser;
       html += `<tr class="${isMe ? "me" : ""}"><td class="rank">${i+1}</td><td>${nameFor(r.username)}</td><td>${r.guesses_used}</td></tr>`;
     });
     html += "</tbody></table>";
     leaderboardBody.innerHTML = html;
   }
 
+  document.addEventListener("keydown", (e) => {
+    if(!state || state.finished) return;
+    const key = e.key.toUpperCase();
+    if(key === "ENTER") handleKey("ENTER");
+    else if(key === "BACKSPACE") handleKey("BACK");
+    else if(/^[A-Z]$/.test(key)) handleKey(key);
+  });
+
   // ---- INIT ----
   if(getSession()){
-    renderSignedIn();
-  } else {
-    renderSignedOut();
+    enterGame();
   }
 
 })();
