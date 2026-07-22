@@ -9,17 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0A0E13;
-    --panel: #121821;
-    --panel-edge: #1D2733;
-    --text: #E7ECF1;
-    --text-dim: #8794A2;
-    --verified: #17D9A3;
-    --verified-dim: #0E5D48;
+    /* Reliance Cyber brand palette: white/light background, dark navy
+       text, orange accent. Tile scoring colours below (correct/present/
+       absent) are deliberately kept separate from this palette, since
+       they're a gameplay signal (green/amber/grey), not a brand colour. */
+    --bg: #F4F6F9;
+    --panel: #FFFFFF;
+    --panel-edge: #DCE2EA;
+    --text: #0B2545;
+    --text-dim: #5C6B7A;
+    --brand-orange: #E85C2C;
+    --brand-orange-dim: #F7D9CB;
+    --verified: #1E9F6E;
+    --verified-dim: #BFE7D8;
     --flagged: #E8A33D;
-    --flagged-dim: #6B4C1B;
-    --absent: #2C3742;
-    --danger: #E85C5C;
+    --flagged-dim: #F7E2C0;
+    --absent: #D7DEE5;
+    --danger: #C4342A;
     --font-display: 'JetBrains Mono', monospace;
     --font-body: 'Inter', sans-serif;
     --radius: 4px;
@@ -30,11 +36,6 @@
   body{
     margin:0;
     background:var(--bg);
-    background-image:
-      linear-gradient(var(--panel-edge) 1px, transparent 1px),
-      linear-gradient(90deg, var(--panel-edge) 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-attachment: fixed;
     color:var(--text);
     font-family:var(--font-body);
     min-height:100vh;
@@ -46,9 +47,9 @@
   .banner{
     width:100%;
     max-width:560px;
-    background:rgba(232,163,61,0.08);
+    background:var(--flagged-dim);
     border:1px solid var(--flagged);
-    color:var(--flagged);
+    color:#7A4F0F;
     font-family:var(--font-display);
     font-size:11px;
     letter-spacing:0.5px;
@@ -74,7 +75,7 @@
     font-family:var(--font-display);
     font-size:10px;
     letter-spacing:2px;
-    color:var(--verified);
+    color:var(--brand-orange);
     text-transform:uppercase;
   }
 
@@ -86,9 +87,9 @@
     font-size:10px;
     letter-spacing:1.5px;
     text-transform:uppercase;
-    color:var(--verified);
-    border:1px solid var(--verified-dim);
-    background:rgba(23,217,163,0.06);
+    color:var(--brand-orange);
+    border:1px solid var(--brand-orange);
+    background:var(--brand-orange-dim);
     padding:6px 10px;
     border-radius:var(--radius);
     white-space:nowrap;
@@ -151,8 +152,8 @@
     font-size:11px;
     letter-spacing:1.5px;
     text-transform:uppercase;
-    background:var(--verified);
-    color:#04140F;
+    background:var(--brand-orange);
+    color:#FFFFFF;
     border:none;
     padding:12px 18px;
     border-radius:var(--radius);
@@ -218,7 +219,7 @@
     transition: transform 0.15s ease;
   }
 
-  .tile.filled{ border-color:#3A4552; }
+  .tile.filled{ border-color:var(--text-dim); }
   .tile.pop{ transform:scale(1.06); }
   .tile.flip{ animation: flipTile 0.5s ease forwards; }
 
@@ -266,15 +267,37 @@
   th, td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--panel-edge); }
   th{ font-family:var(--font-display); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); }
   td.rank{ font-family:var(--font-display); color:var(--flagged); width:30px; }
-  tr.me td{ color:var(--verified); }
+  tr.me td{ color:var(--brand-orange); font-weight:600; }
 
   .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; }
   .stat{ background:var(--bg); border:1px solid var(--panel-edge); border-radius:var(--radius); padding:12px 6px; }
-  .stat .num{ font-family:var(--font-display); font-size:22px; color:var(--verified); }
+  .stat .num{ font-family:var(--font-display); font-size:22px; color:var(--brand-orange); }
   .stat .lbl{ font-family:var(--font-display); font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
 
   .hidden{ display:none; }
   .empty{ font-family:var(--font-display); font-size:12px; color:var(--text-dim); text-align:center; padding:20px 0; }
+
+  .locked-message{
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:700;
+    color:var(--danger);
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    padding:22px 10px;
+  }
+
+  .locked{
+    font-family:var(--font-display);
+    font-size:16px;
+    font-weight:700;
+    color:var(--danger);
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    padding:24px 0;
+  }
 
   footer{
     width:100%; max-width:560px; padding:14px 16px 24px; text-align:center;
@@ -698,7 +721,7 @@
       return;
     }
     if(!state.finished){
-      leaderboardBody.innerHTML = '<div class="empty">Leaderboard unlocks once you finish today\'s game.</div>';
+      leaderboardBody.innerHTML = '<div class="locked-message">LEADERBOARD LOCKED<br>Finish today\'s game to unlock it</div>';
       return;
     }
 
