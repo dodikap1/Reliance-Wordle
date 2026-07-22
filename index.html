@@ -511,17 +511,15 @@
     }
 
     // keyboard colors, best status wins: correct > present > absent
+    const STATUS_RANK = { correct: 3, present: 2, absent: 1 };
     const keyStatus = {};
     state.guesses.forEach(g => {
       const result = scoreGuess(g);
       for(let i=0;i<g.length;i++){
         const letter = g[i];
-        const cur = keyStatus[letter];
         const next = result[i];
-        if(next === "correct" || (next === "present" && cur !== "correct") || (!cur)){
-          if(!cur || (cur === "absent" && next !== "absent") || (cur === "present" && next === "correct") || next === "correct"){
-            keyStatus[letter] = (cur === "correct") ? "correct" : next;
-          }
+        if(!keyStatus[letter] || STATUS_RANK[next] > STATUS_RANK[keyStatus[letter]]){
+          keyStatus[letter] = next;
         }
       }
     });
