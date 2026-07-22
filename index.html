@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reliance Wordle — Daily Cyber Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E13;
+    --panel: #121821;
+    --panel-edge: #1D2733;
+    --text: #E7ECF1;
+    --text-dim: #8794A2;
+    --verified: #17D9A3;
+    --verified-dim: #0E5D48;
+    --flagged: #E8A33D;
+    --flagged-dim: #6B4C1B;
+    --absent: #2C3742;
+    --danger: #E85C5C;
+    --font-display: 'JetBrains Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+    --radius: 4px;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      linear-gradient(var(--panel-edge) 1px, transparent 1px),
+      linear-gradient(90deg, var(--panel-edge) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-attachment: fixed;
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  header{
+    width:100%;
+    max-width:560px;
+    padding:20px 16px 12px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--panel-edge);
+  }
+
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .brand .eyebrow{
+    font-family:var(--font-display);
+    font-size:10px;
+    letter-spacing:2px;
+    color:var(--verified);
+    text-transform:uppercase;
+  }
+
+  .brand h1{
+    font-family:var(--font-display);
+    font-size:20px;
+    font-weight:700;
+    margin:0;
+    letter-spacing:0.5px;
+  }
+
+  .brand h1 span{ color: var(--text-dim); font-weight:400; }
+
+  .status-pill{
+    font-family:var(--font-display);
+    font-size:10px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--verified);
+    border:1px solid var(--verified-dim);
+    background:rgba(23,217,163,0.06);
+    padding:6px 10px;
+    border-radius:var(--radius);
+    white-space:nowrap;
+  }
+
+  main{
+    width:100%;
+    max-width:560px;
+    padding:20px 16px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+    flex:1;
+  }
+
+  #hint-bar{
+    width:100%;
+    font-family:var(--font-display);
+    font-size:12px;
+    color:var(--text-dim);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+
+  #hint-bar .word-len{
+    color:var(--flagged);
+  }
+
+  #board{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+  }
+
+  .row{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+  }
+
+  .tile{
+    width:44px;
+    height:44px;
+    border:1px solid var(--panel-edge);
+    background:var(--panel);
+    border-radius:var(--radius);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:20px;
+    text-transform:uppercase;
+    color:var(--text);
+    transition: transform 0.15s ease;
+  }
+
+  .tile.filled{
+    border-color:#3A4552;
+  }
+
+  .tile.pop{
+    transform:scale(1.06);
+  }
+
+  .tile.flip{
+    animation: flipTile 0.5s ease forwards;
+  }
+
+  @keyframes flipTile{
+    0%{ transform: rotateX(0deg); }
+    50%{ transform: rotateX(90deg); }
+    51%{ transform: rotateX(90deg); }
+    100%{ transform: rotateX(0deg); }
+  }
+
+  .tile.correct{ background:var(--verified); border-color:var(--verified); color:#04140F; }
+  .tile.present{ background:var(--flagged); border-color:var(--flagged); color:#1D1200; }
+  .tile.absent{ background:var(--absent); border-color:var(--absent); color:var(--text-dim); }
+
+  #message{
+    min-height:20px;
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.5px;
+    color:var(--danger);
+    text-transform:uppercase;
+    text-align:center;
+  }
+
+  #keyboard{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    width:100%;
+    max-width:520px;
+  }
+
+  .krow{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+  }
+
+  .key{
+    flex:1;
+    min-width:0;
+    max-width:44px;
+    height:52px;
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:var(--radius);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:13px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    user-select:none;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+
+  .key:active{ transform: scale(0.94); }
+
+  .key.wide{
+    max-width:66px;
+    font-size:10px;
+    letter-spacing:0.5px;
+  }
+
+  .key.correct{ background:var(--verified); border-color:var(--verified); color:#04140F; }
+  .key.present{ background:var(--flagged); border-color:var(--flagged); color:#1D1200; }
+  .key.absent{ background:var(--absent); border-color:var(--absent); color:var(--text-dim); }
+
+  #overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(6,9,13,0.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:10;
+  }
+
+  #overlay.show{ display:flex; }
+
+  .modal{
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:6px;
+    padding:28px 24px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+  }
+
+  .modal .status-icon{
+    font-family:var(--font-display);
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:var(--radius);
+    display:inline-block;
+    margin-bottom:14px;
+  }
+
+  .modal .status-icon.win{ color:var(--verified); border:1px solid var(--verified-dim); background:rgba(23,217,163,0.06); }
+  .modal .status-icon.lose{ color:var(--danger); border:1px solid #6B2323; background:rgba(232,92,92,0.06); }
+
+  .modal h2{
+    font-family:var(--font-display);
+    font-size:22px;
+    margin:0 0 6px;
+  }
+
+  .modal p{
+    color:var(--text-dim);
+    font-size:14px;
+    line-height:1.5;
+    margin:0 0 18px;
+  }
+
+  .modal .answer{
+    font-family:var(--font-display);
+    font-size:26px;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:2px;
+    margin-bottom:18px;
+    word-break:break-all;
+  }
+
+  .modal button{
+    font-family:var(--font-display);
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    background:var(--verified);
+    color:#04140F;
+    border:none;
+    padding:12px 18px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    width:100%;
+  }
+
+  .modal .countdown{
+    margin-top:14px;
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--text-dim);
+  }
+
+  footer{
+    width:100%;
+    max-width:560px;
+    padding:14px 16px 24px;
+    text-align:center;
+    font-family:var(--font-display);
+    font-size:10px;
+    color:var(--text-dim);
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  @media (max-width:900px){
+    .tile{ width:38px; height:38px; font-size:17px; }
+    .key{ height:48px; font-size:12px; }
+    header{ padding:16px 12px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="eyebrow">Reliance Cyber // Daily Briefing</span>
+    <h1>WORDLE<span>::CYBER</span></h1>
+  </div>
+  <div class="status-pill" id="date-pill">LOADING</div>
+</header>
+
+<main>
+  <div id="hint-bar">
+    <span>TARGET LENGTH: <span class="word-len" id="word-len">--</span></span>
+    <span id="guess-count">GUESS 0 / 6</span>
+  </div>
+
+  <div id="board"></div>
+
+  <div id="message"></div>
+
+  <div id="keyboard"></div>
+</main>
+
+<footer>Reliance Cyber — Managed Security Services · New word every 24 hours</footer>
+
+<div id="overlay">
+  <div class="modal">
+    <span class="status-icon" id="modal-icon">RESULT</span>
+    <h2 id="modal-title">-</h2>
+    <p id="modal-sub">-</p>
+    <div class="answer" id="modal-answer">-</div>
+    <button id="modal-close">Close</button>
+    <div class="countdown" id="modal-countdown"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  // ---- WORD BANK ----
+  // Cybersecurity, information governance and Reliance Cyber themed terms.
+  // Add to this list any time — the day-index picker below will fold new
+  // entries in automatically.
+  const WORDS = [
+    "PHISHING","FIREWALL","MALWARE","RANSOMWARE","ENCRYPTION","GOVERNANCE",
+    "COMPLIANCE","ZERODAY","BREACH","ENDPOINT","PENTEST","SPOOFING","BOTNET",
+    "DARKWEB","KEYLOGGER","SANDBOX","BACKDOOR","HONEYPOT","REDTEAM","BLUETEAM",
+    "EXPLOIT","PAYLOAD","ROOTKIT","TROJAN","SPYWARE","CREDENTIAL","CERTIFICATE",
+    "INSIDER","QUARANTINE","FORENSICS","PERIMETER","GATEWAY","PROTOCOL",
+    "CIPHER","ALGORITHM","BIOMETRIC","PASSPHRASE","LOCKDOWN","INTRUSION",
+    "RESILIENCE","MITIGATION","REMEDIATION","ATTACKER","ADVERSARY","ANALYST"
+  ];
+
+  const MAX_GUESSES = 6;
+
+  // ---- DAILY WORD SELECTION ----
+  // Deterministic: every visitor on the same calendar day gets the same word,
+  // with no backend needed. Days since a fixed epoch, modulo the list length.
+  function dayIndex(){
+    const epoch = Date.UTC(2026, 0, 1); // 1 Jan 2026
+    const now = new Date();
+    const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const days = Math.floor((todayUTC - epoch) / 86400000);
+    return ((days % WORDS.length) + WORDS.length) % WORDS.length;
+  }
+
+  const ANSWER = WORDS[dayIndex()];
+  const WORD_LEN = ANSWER.length;
+  const STORAGE_KEY = "reliance-wordle-" + new Date().toISOString().slice(0,10);
+
+  // ---- STATE ----
+  let state = loadState() || {
+    guesses: [],
+    currentGuess: "",
+    finished: false,
+    won: false
+  };
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){ /* ignore */ }
+  }
+
+  // ---- DOM refs ----
+  const boardEl = document.getElementById("board");
+  const keyboardEl = document.getElementById("keyboard");
+  const messageEl = document.getElementById("message");
+  const wordLenEl = document.getElementById("word-len");
+  const guessCountEl = document.getElementById("guess-count");
+  const datePillEl = document.getElementById("date-pill");
+  const overlayEl = document.getElementById("overlay");
+  const modalIcon = document.getElementById("modal-icon");
+  const modalTitle = document.getElementById("modal-title");
+  const modalSub = document.getElementById("modal-sub");
+  const modalAnswer = document.getElementById("modal-answer");
+  const modalCountdown = document.getElementById("modal-countdown");
+  const modalClose = document.getElementById("modal-close");
+
+  wordLenEl.textContent = WORD_LEN;
+  datePillEl.textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short' }).toUpperCase();
+
+  // ---- BUILD BOARD ----
+  function buildBoard(){
+    boardEl.innerHTML = "";
+    for(let r=0; r<MAX_GUESSES; r++){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.dataset.row = r;
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.dataset.row = r;
+        tile.dataset.col = c;
+        row.appendChild(tile);
+      }
+      boardEl.appendChild(row);
+    }
+  }
+
+  // ---- BUILD KEYBOARD ----
+  const KB_ROWS = [
+    "QWERTYUIOP".split(""),
+    "ASDFGHJKL".split(""),
+    ["ENTER", ..."ZXCVBNM".split(""), "BACK"]
+  ];
+
+  function buildKeyboard(){
+    keyboardEl.innerHTML = "";
+    KB_ROWS.forEach(rowKeys => {
+      const row = document.createElement("div");
+      row.className = "krow";
+      rowKeys.forEach(k => {
+        const btn = document.createElement("div");
+        btn.className = "key";
+        btn.dataset.key = k;
+        if(k === "ENTER" || k === "BACK"){
+          btn.classList.add("wide");
+          btn.textContent = k === "BACK" ? "DEL" : "ENTER";
+        } else {
+          btn.textContent = k;
+        }
+        btn.addEventListener("click", () => handleKey(k));
+        row.appendChild(btn);
+      });
+      keyboardEl.appendChild(row);
+    });
+  }
+
+  // ---- RENDER ----
+  function render(){
+    // guess count
+    guessCountEl.textContent = "GUESS " + state.guesses.length + " / " + MAX_GUESSES;
+
+    // completed rows
+    state.guesses.forEach((g, r) => {
+      const result = scoreGuess(g);
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = boardEl.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+        tile.textContent = g[c];
+        tile.classList.add("filled", result[c]);
+      }
+    });
+
+    // current in-progress row
+    if(!state.finished){
+      const r = state.guesses.length;
+      for(let c=0; c<WORD_LEN; c++){
+        const tile = boardEl.querySelector(`.tile[data-row="${r}"][data-col="${c}"]`);
+        if(tile){
+          const letter = state.currentGuess[c] || "";
+          tile.textContent = letter;
+          tile.classList.toggle("filled", !!letter);
+        }
+      }
+    }
+
+    // keyboard colors, best status wins: correct > present > absent
+    const keyStatus = {};
+    state.guesses.forEach(g => {
+      const result = scoreGuess(g);
+      for(let i=0;i<g.length;i++){
+        const letter = g[i];
+        const cur = keyStatus[letter];
+        const next = result[i];
+        if(next === "correct" || (next === "present" && cur !== "correct") || (!cur)){
+          if(!cur || (cur === "absent" && next !== "absent") || (cur === "present" && next === "correct") || next === "correct"){
+            keyStatus[letter] = (cur === "correct") ? "correct" : next;
+          }
+        }
+      }
+    });
+    document.querySelectorAll(".key").forEach(btn => {
+      const k = btn.dataset.key;
+      btn.classList.remove("correct","present","absent");
+      if(keyStatus[k]) btn.classList.add(keyStatus[k]);
+    });
+
+    if(state.finished){
+      showModal();
+    }
+  }
+
+  // ---- SCORING ----
+  function scoreGuess(guess){
+    const result = new Array(WORD_LEN).fill("absent");
+    const answerLetters = ANSWER.split("");
+    const used = new Array(WORD_LEN).fill(false);
+
+    // pass 1: correct
+    for(let i=0;i<WORD_LEN;i++){
+      if(guess[i] === answerLetters[i]){
+        result[i] = "correct";
+        used[i] = true;
+        answerLetters[i] = null;
+      }
+    }
+    // pass 2: present
+    for(let i=0;i<WORD_LEN;i++){
+      if(result[i] === "correct") continue;
+      const idx = answerLetters.indexOf(guess[i]);
+      if(idx !== -1){
+        result[i] = "present";
+        answerLetters[idx] = null;
+      }
+    }
+    return result;
+  }
+
+  // ---- INPUT HANDLING ----
+  function handleKey(k){
+    if(state.finished) return;
+
+    if(k === "BACK"){
+      state.currentGuess = state.currentGuess.slice(0, -1);
+      clearMessage();
+      render();
+      return;
+    }
+
+    if(k === "ENTER"){
+      submitGuess();
+      return;
+    }
+
+    if(/^[A-Z]$/.test(k) && state.currentGuess.length < WORD_LEN){
+      state.currentGuess += k;
+      clearMessage();
+      render();
+    }
+  }
+
+  function submitGuess(){
+    if(state.currentGuess.length < WORD_LEN){
+      flashMessage("Not enough letters");
+      return;
+    }
+    // Phase 1: no dictionary validation beyond length, since word bank is
+    // curated and small — any full-length guess is accepted.
+    state.guesses.push(state.currentGuess);
+    const isCorrect = state.currentGuess === ANSWER;
+    state.currentGuess = "";
+
+    if(isCorrect){
+      state.finished = true;
+      state.won = true;
+    } else if(state.guesses.length >= MAX_GUESSES){
+      state.finished = true;
+      state.won = false;
+    }
+
+    saveState();
+    render();
+  }
+
+  function flashMessage(msg){
+    messageEl.textContent = msg;
+    const row = boardEl.querySelector(`.row[data-row="${state.guesses.length}"]`);
+    if(row){
+      row.querySelectorAll(".tile").forEach(t => {
+        t.style.borderColor = "var(--danger)";
+        setTimeout(() => { t.style.borderColor = ""; }, 400);
+      });
+    }
+  }
+
+  function clearMessage(){
+    messageEl.textContent = "";
+  }
+
+  // ---- MODAL / LEADERBOARD PLACEHOLDER ----
+  function showModal(){
+    if(state.won){
+      modalIcon.textContent = "SOLVED";
+      modalIcon.className = "status-icon win";
+      modalTitle.textContent = "Threat neutralised";
+      modalSub.textContent = "Solved in " + state.guesses.length + " / " + MAX_GUESSES + " guesses.";
+    } else {
+      modalIcon.textContent = "BREACHED";
+      modalIcon.className = "status-icon lose";
+      modalTitle.textContent = "Out of attempts";
+      modalSub.textContent = "The daily term got past you this time.";
+    }
+    modalAnswer.textContent = ANSWER;
+    modalCountdown.textContent = "Next term in " + timeUntilMidnightUTC();
+    overlayEl.classList.add("show");
+  }
+
+  function timeUntilMidnightUTC(){
+    const now = new Date();
+    const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()+1));
+    const diff = next - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return h + "h " + m + "m";
+  }
+
+  modalClose.addEventListener("click", () => overlayEl.classList.remove("show"));
+
+  // physical keyboard
+  document.addEventListener("keydown", (e) => {
+    const key = e.key.toUpperCase();
+    if(key === "ENTER") handleKey("ENTER");
+    else if(key === "BACKSPACE") handleKey("BACK");
+    else if(/^[A-Z]$/.test(key)) handleKey(key);
+  });
+
+  // ---- INIT ----
+  buildBoard();
+  buildKeyboard();
+  render();
+
+  if(state.finished){
+    showModal();
+  }
+
+})();
+</script>
+
+</body>
+</html>
