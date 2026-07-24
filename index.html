@@ -15,6 +15,7 @@
        tuned to still read clearly against a dark background. */
     --bg: #0A1424;
     --bg-2: #0E1B30;
+    --bg-2-rgb: 14 27 48;
     --panel: rgba(255,255,255,0.04);
     --panel-edge: rgba(255,255,255,0.10);
     --text: #F3F6FA;
@@ -30,12 +31,41 @@
     --font-head: 'Sora', sans-serif;
     --font-body: 'Inter', sans-serif;
     --radius: 6px;
+    --input-bg: rgba(0,0,0,0.25);
+    --tile-bg: rgba(6,12,22,0.62);
+    --key-bg: rgba(6,12,22,0.5);
 
     /* Vertical bar pattern, varying widths and soft blurred edges, meant
        to read as zoomed-in chip circuitry / light streaks. Generated as
        a small tiling SVG (420x20) and base64-encoded here so the whole
-       game stays a single HTML file with no separate image asset. */
-    --chip-pattern: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDIwIiBoZWlnaHQ9IjIwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxmaWx0ZXIgaWQ9ImIiIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNC41Ii8+CiAgPC9maWx0ZXI+CiAgPGcgZmlsdGVyPSJ1cmwoI2IpIj4KICAgIDxyZWN0IHg9IjAiICAgeT0iMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjQwIi8+CiAgICA8cmVjdCB4PSIyNiIgIHk9IjAiIHdpZHRoPSI3IiAgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNkIyQyIgb3BhY2l0eT0iMC4zMCIvPgogICAgPHJlY3QgeD0iNDgiICB5PSIwIiB3aWR0aD0iMzAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRkZGRkYiIG9wYWNpdHk9IjAuMDkiLz4KICAgIDxyZWN0IHg9IjkyIiAgeT0iMCIgd2lkdGg9IjExIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjM1Ii8+CiAgICA8cmVjdCB4PSIxMTgiIHk9IjAiIHdpZHRoPSI0IiAgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC4xNCIvPgogICAgPHJlY3QgeD0iMTM2IiB5PSIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjQiLz4KICAgIDxyZWN0IHg9IjE3MiIgeT0iMCIgd2lkdGg9IjkiICBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjMyIi8+CiAgICA8cmVjdCB4PSIxOTgiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC4wNiIvPgogICAgPHJlY3QgeD0iMjQ4IiB5PSIwIiB3aWR0aD0iMTMiIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjYiLz4KICAgIDxyZWN0IHg9IjI3NiIgeT0iMCIgd2lkdGg9IjYiICBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjEyIi8+CiAgICA8cmVjdCB4PSIyOTgiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0YyQTY1QSIgb3BhY2l0eT0iMC4zMCIvPgogICAgPHJlY3QgeD0iMzM4IiB5PSIwIiB3aWR0aD0iOCIgIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjIiLz4KICAgIDxyZWN0IHg9IjM2MiIgeT0iMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjA4Ii8+CiAgICA8cmVjdCB4PSIzOTYiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0YyQTY1QSIgb3BhY2l0eT0iMC4yOCIvPgogIDwvZz4KPC9zdmc+Cg==");
+       game stays a single HTML file with no separate image asset.
+       Two versions exist so the bars stay visible against either theme. */
+    --chip-pattern-dark: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDIwIiBoZWlnaHQ9IjIwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxmaWx0ZXIgaWQ9ImIiIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNC41Ii8+CiAgPC9maWx0ZXI+CiAgPGcgZmlsdGVyPSJ1cmwoI2IpIj4KICAgIDxyZWN0IHg9IjAiICAgeT0iMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjQwIi8+CiAgICA8cmVjdCB4PSIyNiIgIHk9IjAiIHdpZHRoPSI3IiAgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNkIyQyIgb3BhY2l0eT0iMC4zMCIvPgogICAgPHJlY3QgeD0iNDgiICB5PSIwIiB3aWR0aD0iMzAiIGhlaWdodD0iMjAiIGZpbGw9IiNGRkZGRkYiIG9wYWNpdHk9IjAuMDkiLz4KICAgIDxyZWN0IHg9IjkyIiAgeT0iMCIgd2lkdGg9IjExIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjM1Ii8+CiAgICA8cmVjdCB4PSIxMTgiIHk9IjAiIHdpZHRoPSI0IiAgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC4xNCIvPgogICAgPHJlY3QgeD0iMTM2IiB5PSIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjQiLz4KICAgIDxyZWN0IHg9IjE3MiIgeT0iMCIgd2lkdGg9IjkiICBoZWlnaHQ9IjIwIiBmaWxsPSIjRjJBNjVBIiBvcGFjaXR5PSIwLjMyIi8+CiAgICA8cmVjdCB4PSIxOTgiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC4wNiIvPgogICAgPHJlY3QgeD0iMjQ4IiB5PSIwIiB3aWR0aD0iMTMiIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjYiLz4KICAgIDxyZWN0IHg9IjI3NiIgeT0iMCIgd2lkdGg9IjYiICBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjEyIi8+CiAgICA8cmVjdCB4PSIyOTgiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0YyQTY1QSIgb3BhY2l0eT0iMC4zMCIvPgogICAgPHJlY3QgeD0iMzM4IiB5PSIwIiB3aWR0aD0iOCIgIGhlaWdodD0iMjAiIGZpbGw9IiNFRjZCMkMiIG9wYWNpdHk9IjAuMjIiLz4KICAgIDxyZWN0IHg9IjM2MiIgeT0iMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjA4Ii8+CiAgICA8cmVjdCB4PSIzOTYiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0YyQTY1QSIgb3BhY2l0eT0iMC4yOCIvPgogIDwvZz4KPC9zdmc+Cg==");
+    --chip-pattern-light: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDIwIiBoZWlnaHQ9IjIwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxmaWx0ZXIgaWQ9ImIiIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNC41Ii8+CiAgPC9maWx0ZXI+CiAgPGcgZmlsdGVyPSJ1cmwoI2IpIj4KICAgIDxyZWN0IHg9IjAiICAgeT0iMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRUY2QjJDIiBvcGFjaXR5PSIwLjMyIi8+CiAgICA8cmVjdCB4PSIyNiIgIHk9IjAiIHdpZHRoPSI3IiAgaGVpZ2h0PSIyMCIgZmlsbD0iIzBCMTQyNCIgb3BhY2l0eT0iMC4xNCIvPgogICAgPHJlY3QgeD0iNDgiICB5PSIwIiB3aWR0aD0iMzAiIGhlaWdodD0iMjAiIGZpbGw9IiNGMkE2NUEiIG9wYWNpdHk9IjAuMjIiLz4KICAgIDxyZWN0IHg9IjkyIiAgeT0iMCIgd2lkdGg9IjExIiBoZWlnaHQ9IjIwIiBmaWxsPSIjRUY2QjJDIiBvcGFjaXR5PSIwLjI4Ii8+CiAgICA8cmVjdCB4PSIxMTgiIHk9IjAiIHdpZHRoPSI0IiAgaGVpZ2h0PSIyMCIgZmlsbD0iIzBCMTQyNCIgb3BhY2l0eT0iMC4xNiIvPgogICAgPHJlY3QgeD0iMTM2IiB5PSIwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiNGMkE2NUEiIG9wYWNpdHk9IjAuMjAiLz4KICAgIDxyZWN0IHg9IjE3MiIgeT0iMCIgd2lkdGg9IjkiICBoZWlnaHQ9IjIwIiBmaWxsPSIjRUY2QjJDIiBvcGFjaXR5PSIwLjI2Ii8+CiAgICA8cmVjdCB4PSIxOTgiIHk9IjAiIHdpZHRoPSIzNCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzBCMTQyNCIgb3BhY2l0eT0iMC4wOCIvPgogICAgPHJlY3QgeD0iMjQ4IiB5PSIwIiB3aWR0aD0iMTMiIGhlaWdodD0iMjAiIGZpbGw9IiNGMkE2NUEiIG9wYWNpdHk9IjAuMjQiLz4KICAgIDxyZWN0IHg9IjI3NiIgeT0iMCIgd2lkdGg9IjYiICBoZWlnaHQ9IjIwIiBmaWxsPSIjMEIxNDI0IiBvcGFjaXR5PSIwLjEzIi8+CiAgICA8cmVjdCB4PSIyOTgiIHk9IjAiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNkIyQyIgb3BhY2l0eT0iMC4yMiIvPgogICAgPHJlY3QgeD0iMzM4IiB5PSIwIiB3aWR0aD0iOCIgIGhlaWdodD0iMjAiIGZpbGw9IiNGMkE2NUEiIG9wYWNpdHk9IjAuMjYiLz4KICAgIDxyZWN0IHg9IjM2MiIgeT0iMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjIwIiBmaWxsPSIjMEIxNDI0IiBvcGFjaXR5PSIwLjEwIi8+CiAgICA8cmVjdCB4PSIzOTYiIHk9IjAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0VGNkIyQyIgb3BhY2l0eT0iMC4yNCIvPgogIDwvZz4KPC9zdmc+Cg==");
+    --chip-pattern: var(--chip-pattern-dark);
+  }
+
+  /* Light theme overrides. Activated by adding data-theme="light" to the
+     <html> element (see the toggle switch logic near the bottom of the
+     script). Colours pull from the same cream/tan/orange tones seen in
+     the lighter panels of the brand moodboard, rather than a plain
+     corporate white, so it still feels like the same campaign. */
+  :root[data-theme="light"]{
+    --bg: #EDE6DB;
+    --bg-2: #E3D9C8;
+    --bg-2-rgb: 227 217 200;
+    --panel: rgba(11,20,36,0.035);
+    --panel-edge: rgba(11,20,36,0.14);
+    --text: #16233A;
+    --text-dim: #5C6B7E;
+    --brand-orange-soft: #D9581F;
+    --verified: #178F5E;
+    --absent: #DCE1E8;
+    --danger: #C23B27;
+    --chip-pattern: var(--chip-pattern-light);
+    --input-bg: rgba(255,255,255,0.55);
+    --tile-bg: rgba(255,255,255,0.75);
+    --key-bg: rgba(255,255,255,0.6);
   }
 
   *{box-sizing:border-box;}
@@ -43,7 +73,7 @@
   body{
     margin:0;
     background-image:
-      linear-gradient(180deg, rgba(14,27,48,0) 0%, rgba(14,27,48,0.78) 55%, rgba(14,27,48,0.97) 100%),
+      linear-gradient(180deg, rgb(var(--bg-2-rgb) / 0) 0%, rgb(var(--bg-2-rgb) / 0.78) 55%, rgb(var(--bg-2-rgb) / 0.97) 100%),
       linear-gradient(90deg, rgba(239,107,44,0.60) 0%, rgba(242,166,90,0.40) 100%),
       var(--chip-pattern),
       linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
@@ -83,6 +113,50 @@
   @media (prefers-reduced-motion: reduce){
     body{ animation:none; }
     body::before{ animation:none; opacity:0.8; }
+  }
+
+  .theme-toggle{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:10;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--panel);
+    border:1px solid var(--panel-edge);
+    border-radius:999px;
+    padding:6px 12px 6px 6px;
+    cursor:pointer;
+    backdrop-filter: blur(6px);
+    user-select:none;
+  }
+
+  .theme-toggle .track{
+    width:36px; height:20px;
+    background:rgba(0,0,0,0.25);
+    border-radius:999px;
+    position:relative;
+    transition: background 0.2s ease;
+  }
+
+  .theme-toggle .knob{
+    position:absolute;
+    top:2px; left:2px;
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--brand-orange);
+    transition: transform 0.2s ease;
+  }
+
+  :root[data-theme="light"] .theme-toggle .knob{ transform: translateX(16px); }
+
+  .theme-toggle .label{
+    font-family:var(--font-display);
+    font-size:10px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--text-dim);
   }
 
   .banner{
@@ -190,7 +264,7 @@
 
   input{
     width:100%;
-    background:rgba(0,0,0,0.25);
+    background:var(--input-bg);
     border:1px solid var(--panel-edge);
     border-radius:var(--radius);
     color:var(--text);
@@ -271,7 +345,8 @@
   .tile{
     width:44px; height:44px;
     border:1px solid var(--panel-edge);
-    background:rgba(255,255,255,0.02);
+    background:var(--tile-bg);
+    backdrop-filter: blur(4px);
     border-radius:var(--radius);
     display:flex; align-items:center; justify-content:center;
     font-family:var(--font-display); font-weight:700; font-size:20px;
@@ -300,7 +375,8 @@
 
   .key{
     flex:1; min-width:0; max-width:44px; height:52px;
-    background:rgba(255,255,255,0.03); border:1px solid var(--panel-edge);
+    background:var(--key-bg); border:1px solid var(--panel-edge);
+    backdrop-filter: blur(4px);
     border-radius:var(--radius); color:var(--text);
     font-family:var(--font-body); font-weight:600; font-size:13px;
     text-transform:uppercase; display:flex; align-items:center; justify-content:center;
@@ -355,6 +431,11 @@
 </head>
 <body>
 
+<div class="theme-toggle" id="theme-toggle" role="button" aria-label="Toggle light and dark mode">
+  <div class="track"><div class="knob"></div></div>
+  <span class="label" id="theme-toggle-label">Dark</span>
+</div>
+
 <div class="banner">
   PROTOTYPE ONLY. Passwords here are stored in plain text in your browser's
   local storage, purely to test the login and leaderboard flow. This is not
@@ -365,7 +446,7 @@
 <header>
   <div class="brand">
     <svg class="logo-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M6 6C6 9 9 9 12 12C15 15 18 15 18 18" stroke="#F3F6FA" stroke-width="2" stroke-linecap="round"/>
+      <path d="M6 6C6 9 9 9 12 12C15 15 18 15 18 18" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>
       <path d="M18 6C18 9 15 9 12 12C9 15 6 15 6 18" stroke="#EF6B2C" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <span class="eyebrow">// Reliance Cyber Daily Briefing</span>
@@ -794,6 +875,33 @@
   if(getSession()){
     enterGame();
   }
+
+  // ---- THEME TOGGLE ----
+  // Dark is the default look. The choice is remembered per browser so it
+  // sticks around on the next visit, same as the login session above.
+  const THEME_KEY = "rw-proto-theme";
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeLabel = document.getElementById("theme-toggle-label");
+
+  function applyTheme(theme){
+    if(theme === "light"){
+      document.documentElement.setAttribute("data-theme", "light");
+      themeLabel.textContent = "Light";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      themeLabel.textContent = "Dark";
+    }
+  }
+
+  const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+  applyTheme(savedTheme);
+
+  themeToggle.addEventListener("click", () => {
+    const isLight = document.documentElement.getAttribute("data-theme") === "light";
+    const next = isLight ? "dark" : "light";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
 
 })();
 </script>
