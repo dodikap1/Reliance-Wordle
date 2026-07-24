@@ -6,36 +6,47 @@
 <title>Reliance Wordle — Phase 2 Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Reliance Cyber brand palette: white/light background, dark navy
-       text, orange accent. Tile scoring colours below (correct/present/
-       absent) are deliberately kept separate from this palette, since
-       they're a gameplay signal (green/amber/grey), not a brand colour. */
-    --bg: #F4F6F9;
-    --panel: #FFFFFF;
-    --panel-edge: #DCE2EA;
-    --text: #0B2545;
-    --text-dim: #5C6B7A;
-    --brand-orange: #E85C2C;
-    --brand-orange-dim: #F7D9CB;
-    --verified: #1E9F6E;
-    --verified-dim: #BFE7D8;
+    /* "Agentic SOC" campaign palette: deep navy fading to warm orange,
+       bold heavy display type, thin uppercase labels. Tile scoring colours
+       (correct/present/absent) are kept as a distinct gameplay signal,
+       tuned to still read clearly against a dark background. */
+    --bg: #0A1424;
+    --bg-2: #0E1B30;
+    --panel: rgba(255,255,255,0.04);
+    --panel-edge: rgba(255,255,255,0.10);
+    --text: #F3F6FA;
+    --text-dim: #93A1B5;
+    --brand-orange: #EF6B2C;
+    --brand-orange-soft: #F2A65A;
+    --brand-tan: #C9AD8C;
+    --verified: #22B57F;
+    --verified-dim: rgba(34,181,127,0.18);
     --flagged: #E8A33D;
-    --flagged-dim: #F7E2C0;
-    --absent: #D7DEE5;
-    --danger: #C4342A;
+    --flagged-dim: rgba(232,163,61,0.18);
+    --absent: #202B40;
+    --danger: #E8543D;
     --font-display: 'JetBrains Mono', monospace;
+    --font-head: 'Sora', sans-serif;
     --font-body: 'Inter', sans-serif;
-    --radius: 4px;
+    --radius: 6px;
   }
 
   *{box-sizing:border-box;}
 
   body{
     margin:0;
-    background:var(--bg);
+    background-image:
+      linear-gradient(180deg, rgba(14,27,48,0) 0%, rgba(14,27,48,0.78) 55%, rgba(14,27,48,0.97) 100%),
+      linear-gradient(90deg, rgba(239,107,44,0.60) 0%, rgba(242,166,90,0.40) 100%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 34px),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-repeat: no-repeat, no-repeat, repeat, no-repeat;
+    background-position: top, top, top, top;
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    background-attachment: fixed, fixed, fixed, fixed;
     color:var(--text);
     font-family:var(--font-body);
     min-height:100vh;
@@ -49,7 +60,7 @@
     max-width:560px;
     background:var(--flagged-dim);
     border:1px solid var(--flagged);
-    color:#7A4F0F;
+    color:var(--flagged);
     font-family:var(--font-display);
     font-size:11px;
     letter-spacing:0.5px;
@@ -62,24 +73,37 @@
   header{
     width:100%;
     max-width:560px;
-    padding:20px 16px 12px;
+    padding:28px 16px 22px;
     display:flex;
-    align-items:center;
+    align-items:flex-end;
     justify-content:space-between;
     border-bottom:1px solid var(--panel-edge);
   }
 
-  .brand{ display:flex; flex-direction:column; gap:2px; }
+  .brand{ display:flex; flex-direction:column; gap:8px; }
+
+  .brand .logo-mark{
+    width:22px; height:22px;
+    display:block;
+    margin-bottom:2px;
+  }
 
   .brand .eyebrow{
     font-family:var(--font-display);
     font-size:10px;
     letter-spacing:2px;
-    color:var(--brand-orange);
+    color:var(--brand-orange-soft);
     text-transform:uppercase;
   }
 
-  .brand h1{ font-family:var(--font-display); font-size:20px; font-weight:700; margin:0; letter-spacing:0.5px; }
+  .brand h1{
+    font-family:var(--font-head);
+    font-size:30px;
+    font-weight:800;
+    margin:0;
+    letter-spacing:-0.5px;
+    line-height:1;
+  }
   .brand h1 span{ color: var(--text-dim); font-weight:400; }
 
   .status-pill{
@@ -87,18 +111,18 @@
     font-size:10px;
     letter-spacing:1.5px;
     text-transform:uppercase;
-    color:var(--brand-orange);
-    border:1px solid var(--brand-orange);
-    background:var(--brand-orange-dim);
-    padding:6px 10px;
-    border-radius:var(--radius);
+    color:var(--brand-orange-soft);
+    border:1px solid rgba(239,107,44,0.4);
+    background:rgba(239,107,44,0.10);
+    padding:6px 12px;
+    border-radius:999px;
     white-space:nowrap;
   }
 
   main{
     width:100%;
     max-width:560px;
-    padding:20px 16px 40px;
+    padding:24px 16px 40px;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -110,17 +134,18 @@
     width:100%;
     background:var(--panel);
     border:1px solid var(--panel-edge);
-    border-radius:6px;
-    padding:20px;
+    border-radius:10px;
+    padding:22px;
+    backdrop-filter: blur(6px);
   }
 
   .panel h2{
     font-family:var(--font-display);
-    font-size:13px;
-    letter-spacing:1px;
+    font-size:12px;
+    letter-spacing:1.5px;
     text-transform:uppercase;
     color:var(--text-dim);
-    margin:0 0 14px;
+    margin:0 0 16px;
   }
 
   label{
@@ -135,17 +160,17 @@
 
   input{
     width:100%;
-    background:var(--bg);
+    background:rgba(0,0,0,0.25);
     border:1px solid var(--panel-edge);
     border-radius:var(--radius);
     color:var(--text);
     font-family:var(--font-body);
     font-size:14px;
-    padding:10px 12px;
+    padding:11px 12px;
     margin-bottom:14px;
   }
 
-  input:focus{ outline:2px solid var(--verified); outline-offset:1px; }
+  input:focus{ outline:2px solid var(--brand-orange); outline-offset:1px; }
 
   button{
     font-family:var(--font-display);
@@ -153,19 +178,24 @@
     letter-spacing:1.5px;
     text-transform:uppercase;
     background:var(--brand-orange);
-    color:#FFFFFF;
+    color:#0A1424;
+    font-weight:700;
     border:none;
-    padding:12px 18px;
-    border-radius:var(--radius);
+    padding:13px 18px;
+    border-radius:999px;
     cursor:pointer;
     width:100%;
+    transition: background 0.15s ease;
   }
+
+  button:hover{ background:var(--brand-orange-soft); }
 
   button.secondary{
     background:transparent;
     border:1px solid var(--panel-edge);
     color:var(--text-dim);
     margin-top:8px;
+    font-weight:400;
   }
 
   #auth-message{
@@ -186,11 +216,11 @@
     color:var(--text-dim);
     width:100%;
     max-width:560px;
-    padding:0 16px;
+    padding:14px 16px 0;
   }
 
-  .whoami strong{ color:var(--verified); }
-  .whoami button{ width:auto; padding:6px 12px; }
+  .whoami strong{ color:var(--brand-orange-soft); }
+  .whoami button{ width:auto; padding:6px 14px; }
 
   #hint-bar{
     width:100%;
@@ -203,7 +233,7 @@
     gap:10px;
   }
 
-  #hint-bar .word-len{ color:var(--flagged); }
+  #hint-bar .word-len{ color:var(--brand-orange-soft); }
 
   #board{ display:flex; flex-direction:column; gap:6px; width:100%; }
   .row{ display:flex; gap:6px; justify-content:center; }
@@ -211,7 +241,7 @@
   .tile{
     width:44px; height:44px;
     border:1px solid var(--panel-edge);
-    background:var(--panel);
+    background:rgba(255,255,255,0.02);
     border-radius:var(--radius);
     display:flex; align-items:center; justify-content:center;
     font-family:var(--font-display); font-weight:700; font-size:20px;
@@ -249,7 +279,7 @@
 
   .key{
     flex:1; min-width:0; max-width:44px; height:52px;
-    background:var(--panel); border:1px solid var(--panel-edge);
+    background:rgba(255,255,255,0.03); border:1px solid var(--panel-edge);
     border-radius:var(--radius); color:var(--text);
     font-family:var(--font-body); font-weight:600; font-size:13px;
     text-transform:uppercase; display:flex; align-items:center; justify-content:center;
@@ -264,14 +294,14 @@
   .key.absent{ background:var(--absent); border-color:var(--absent); color:var(--text-dim); }
 
   table{ width:100%; border-collapse:collapse; font-size:13px; }
-  th, td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--panel-edge); }
+  th, td{ text-align:left; padding:9px 6px; border-bottom:1px solid var(--panel-edge); }
   th{ font-family:var(--font-display); font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); }
-  td.rank{ font-family:var(--font-display); color:var(--flagged); width:30px; }
-  tr.me td{ color:var(--brand-orange); font-weight:600; }
+  td.rank{ font-family:var(--font-display); color:var(--brand-orange-soft); width:30px; }
+  tr.me td{ color:var(--brand-orange-soft); font-weight:600; }
 
   .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; }
-  .stat{ background:var(--bg); border:1px solid var(--panel-edge); border-radius:var(--radius); padding:12px 6px; }
-  .stat .num{ font-family:var(--font-display); font-size:22px; color:var(--brand-orange); }
+  .stat{ background:rgba(0,0,0,0.2); border:1px solid var(--panel-edge); border-radius:var(--radius); padding:14px 6px; }
+  .stat .num{ font-family:var(--font-head); font-weight:800; font-size:24px; color:var(--brand-orange-soft); }
   .stat .lbl{ font-family:var(--font-display); font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
 
   .hidden{ display:none; }
@@ -288,19 +318,8 @@
     padding:22px 10px;
   }
 
-  .locked{
-    font-family:var(--font-display);
-    font-size:16px;
-    font-weight:700;
-    color:var(--danger);
-    text-align:center;
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    padding:24px 0;
-  }
-
   footer{
-    width:100%; max-width:560px; padding:14px 16px 24px; text-align:center;
+    width:100%; max-width:560px; padding:20px 16px 28px; text-align:center;
     font-family:var(--font-display); font-size:10px; color:var(--text-dim);
     letter-spacing:1px; text-transform:uppercase;
   }
@@ -308,7 +327,8 @@
   @media (max-width:900px){
     .tile{ width:38px; height:38px; font-size:17px; }
     .key{ height:48px; font-size:12px; }
-    header{ padding:16px 12px 10px; }
+    header{ padding:20px 12px 16px; }
+    .brand h1{ font-size:24px; }
   }
 </style>
 </head>
@@ -323,7 +343,11 @@
 
 <header>
   <div class="brand">
-    <span class="eyebrow">Reliance Cyber // Daily Briefing</span>
+    <svg class="logo-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 6C6 9 9 9 12 12C15 15 18 15 18 18" stroke="#F3F6FA" stroke-width="2" stroke-linecap="round"/>
+      <path d="M18 6C18 9 15 9 12 12C9 15 6 15 6 18" stroke="#EF6B2C" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="eyebrow">// Reliance Cyber Daily Briefing</span>
     <h1>WORDLE<span>::CYBER</span></h1>
   </div>
   <div class="status-pill" id="date-pill">LOADING</div>
